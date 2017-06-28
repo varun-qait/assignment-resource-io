@@ -3,6 +3,9 @@ package com.qainfotech.tap.training.resourceio.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import com.qainfotech.tap.training.resourceio.TeamsJsonReader;
 
 /**
  *
@@ -13,9 +16,30 @@ public class Team {
     private final String name;
     private final Integer id;
     private final List<Individual> members;
+    TeamsJsonReader tjr = new TeamsJsonReader();
+    List<Individual> activeTeam;
+    List<Individual> inActiveTeam;
     
     public Team(Map<String, Object> teamMap){
-        throw new UnsupportedOperationException("Not implemented.");
+        JSONObject team = (JSONObject) teamMap.get("id"); // In db.json there are 2 objects. Returns a team object.
+        this.id = Integer.parseInt(team.get("id").toString());
+        this.name = team.get("name").toString(); 
+        this.members = new ArrayList<>();
+        JSONArray memberJsonArray = (JSONArray) team.get("members"); // Getting the reference to 'members' field of a team object and as it is a list i am casting it to a jsonarray 
+        List<Individual> ind = tjr.getListOfIndividuals(); // Creating a local copy of individual list.
+        
+        for(int i = 0; i < memberJsonArray.size(); i++) {
+            //the reason why the below statement will not run is that in our json we don't always have id first attribute.
+            //int employeeId = (Integer) memberJsonArray.get(i);
+            Long value = (Long) memberJsonArray.get(i);
+            int employeeId = (int) value.longValue();
+            for(int j = 0; j < ind.size(); j++) {
+                if(ind.get(j).getId() == employeeId) {
+                    this.members.add(ind.get(j));
+                }
+            }
+        }
+        //throw new UnsupportedOperationException("Not implemented.");
     }
     
     /**
@@ -51,7 +75,15 @@ public class Team {
      * @return 
      */
     public List<Individual> getActiveMembers(){
-        throw new UnsupportedOperationException("Not implemented.");
+        activeTeam = new ArrayList<>();
+        for(int i = 0; i < members.size(); i++) {
+            if(members.get(i).isActive()) {
+                activeTeam.add(members.get(i));
+            }
+        }
+        
+        return activeTeam;     
+        //throw new UnsupportedOperationException("Not implemented.");
     }
         
     /**
@@ -60,6 +92,14 @@ public class Team {
      * @return 
      */
     public List<Individual> getInactiveMembers(){
-        throw new UnsupportedOperationException("Not implemented.");
+        inActiveTeam = new ArrayList<>();
+        for(int i = 0; i < members.size(); i++) {
+            if(!(members.get(i).isActive())) {
+                inActiveTeam.add(members.get(i));
+            }
+        }
+        
+        return inActiveTeam; 
+        // throw new UnsupportedOperationException("Not implemented.");
     }
 }
