@@ -1,6 +1,7 @@
 package com.qainfotech.tap.training.resourceio.model;
 
 import java.util.Map;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -13,7 +14,15 @@ public class Individual {
     private final Boolean active;
     
     public Individual(Map<String, Object> individualMap){
-        throw new UnsupportedOperationException("Not implemented.");
+     
+        JSONObject individual = (JSONObject) individualMap.get("id");
+        this.id = Integer.parseInt(individual.get("id").toString());
+        //System.out.println(id);
+        this.name = individual.get("name").toString(); 
+        //System.out.println(name);
+        this.active = Boolean.parseBoolean(individual.get("active").toString());
+        //System.out.println(active);
+        //throw new UnsupportedOperationException("Not implemented.");
     }
     
     /**
