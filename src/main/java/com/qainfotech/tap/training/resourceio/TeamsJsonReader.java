@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -33,8 +32,9 @@ public class TeamsJsonReader{
     
     List<Individual> inactive;
     List<Individual> active;
-
     JSONObject obj;
+    
+    
     void jsonParser() throws IOException {
         try {
             JSONParser jp = new JSONParser();
@@ -45,8 +45,10 @@ public class TeamsJsonReader{
         }
     }
     
+    
     List<Individual> ind;
     List<Team> t;
+   
     public List<Individual> getListOfIndividuals(){
         ind = new ArrayList<>();
         try {
@@ -54,6 +56,7 @@ public class TeamsJsonReader{
         } catch(Exception e) {
         
         }
+       
         JSONArray arr = (JSONArray) obj.get("individuals"); // here you get an array of individuals
         for(int i = 0; i < arr.size(); i++) {
             JSONObject iobj = (JSONObject) arr.get(i); // each entry in jsonArray is itself considered as a jsonobject
@@ -62,21 +65,15 @@ public class TeamsJsonReader{
             //System.out.println(iobj.toString()); // {"name":"John Doe","active":true,"id":1201}
             //map.put(iobj.toString(), iobj); // Here i am puting the toString() representation of whole object as key -- WRONG APPROACH
             //map.put(String.valueOf(iobj.get("id")), iobj); // This is wrong as here i am using value of id as key
-            map.put("id", iobj);
+            map.put("id", iobj.get("id"));
+            map.put("name", iobj.get("name"));
+            map.put("active", iobj.get("active"));
             Individual individual = new Individual(map);
             //System.out.println(i + " is added\n\n");
-            
-            
             ind.add(individual);
         }
         return ind;
     }
-    
-                                                    // Debug Code
-                                                    void printArrayListSize() {
-                                                        System.out.println(ind.size());
-
-                                                    }
     
     
     /**
@@ -163,11 +160,20 @@ public class TeamsJsonReader{
             Logger.getLogger(TeamsJsonReader.class.getName()).log(Level.SEVERE, null, ex);
         }
         t = new ArrayList<>();
+        
+        
         JSONArray team = (JSONArray) obj.get("teams");
         for(int i = 0; i < team.size(); i++) {
             JSONObject tobj = (JSONObject) team.get(i);
+            
+            
             Map<String, Object> map = new HashMap<>();
-            map.put("id", tobj);
+            
+            
+            map.put("id", tobj.get("id"));
+            map.put("name", tobj.get("name"));
+            map.put("members", tobj.get("members"));
+            
             Team teamObj = new Team(map);
             t.add(teamObj);
         }
@@ -178,9 +184,9 @@ public class TeamsJsonReader{
     
 //    public static void main(String[] args) {
 //        TeamsJsonReader tjr = new TeamsJsonReader();
-//        //tjr.getListOfIndividuals();
+//        tjr.getListOfIndividuals();
 //        //tjr.printArrayListSize();
-//        tjr.getListOfTeams();
+//        //tjr.getListOfTeams();
 //    }
     
 }
