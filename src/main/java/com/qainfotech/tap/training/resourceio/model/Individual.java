@@ -15,13 +15,10 @@ public class Individual {
     
     public Individual(Map<String, Object> individualMap){
      
-        JSONObject individual = (JSONObject) individualMap.get("id");
-        this.id = Integer.parseInt(individual.get("id").toString());
-        //System.out.println(id);
-        this.name = individual.get("name").toString(); 
-        //System.out.println(name);
-        this.active = Boolean.parseBoolean(individual.get("active").toString());
-        //System.out.println(active);
+        this.id = Integer.parseInt(individualMap.get("id").toString());
+        this.name = individualMap.get("name").toString(); 
+        this.active = Boolean.parseBoolean(individualMap.get("active").toString());
+
         //throw new UnsupportedOperationException("Not implemented.");
     }
     
@@ -50,4 +47,11 @@ public class Individual {
     public Boolean isActive(){
         return active;
     }
+
+    @Override
+    public String toString() {
+        return "Individual{" + "name=" + name + ", id=" + id + ", active=" + active + '}';
+    }
+    
+    
 }
